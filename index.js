@@ -74,6 +74,6 @@ MultiDat.prototype.startDatServers = function startDatServers () {
     }); 
 }
 
-MultiDat.prototype.listen = function createServer (port, cb) {
+MultiDat.prototype.listen = function listen (port, cb) {
   this.server.listen(port, cb);
 };
