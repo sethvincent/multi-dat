@@ -1,0 +1,21 @@
+{
+  "name": "multi-dat",
+  "description": "an api server for managing multiple dat repositories",
+  "version": "0.0.0",
+  "repository": {
+    "url": "git://github.com/sethvincent/multi-dat.git"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "dat": "git://github.com/maxogden/dat",
+    "level": "^0.18.0",
+    "body": "^4.4.2",
+    "send-data": "^3.1.2",
+    "body-parser": "^1.3.0",
+    "express": "^4.4.1",
+    "level-json": "0.0.7"
+  },
+  "devDependencies": {
+    "request": "^2.36.0"
+  }
+}
