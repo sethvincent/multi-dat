@@ -1,6 +1,6 @@
 # multi-dat
 
-Manage multiple dat repositories through a JSON API.
+Manage multiple [dat](http://github.com/maxogden/dat) repositories through a JSON API.
 
 ## Too soon, don't use.
 
