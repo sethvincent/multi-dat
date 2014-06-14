@@ -10,10 +10,12 @@ multi-dat creates new dat repos in a `repos` folder, and provides a JSON array a
 
 ## Example
 
+Install: `npm install --save sethvincent/multi-dat`
+
 Use multi-dat with a leveldb that's used to track the dat repos that have been created.
 
 ```
-var MultiDat = require('../index');
+var MultiDat = require('multi-dat');
 var level = require('level');
 var db = level(__dirname + '/db', { valueEncoding: 'json' });
 
