@@ -1,5 +1,5 @@
-var bodyParser = require('body-parser');
-var express = require('express');
+var Router = require('routes-router');
+var http = require('http');
 var path = require('path');
 var dat = require('dat');
 
@@ -13,44 +13,55 @@ function MultiDat (db, options) {
   this.host = options.host || 'http://localhost';
   this.db = db;
   
-  this.server = this.createServer();
+  this.routes();
   this.startDatServers();
 }
 
-MultiDat.prototype.createServer = function() {
+MultiDat.prototype.routes = function() {
   var self = this;
-  
-  var app = express();
-  app.use(bodyParser.json());
+  var router = new Router();
 
-  app.get('/', function (req, res) {
+  router.addRoute('/', function (req, res) {
     var results = [];
     self.db.createReadStream()
       .on('data', function (data) {
         results.push(data);
       })
       .on('end', function () {
-        res.json(results);
+        res.end(JSON.stringify(results));
       });
   });
 
-  app.post('/dat', function (req, res) {
-    var db = dat(path.join(process.cwd(), self.reposDir, req.body.name), function (err) {
+  router.addRoute('/dat', function (req, res) {
+    var body = '';
 
-      db.listen(function (err) {
-        var port = db._server.address().port
-        var url = self.host + ':' + port;
+    req.on('data', function (data) {
+      body += data;
+    });
 
-        self.db.put(req.body.name, { url: url, port: port }, function (dbErr) {
-          if (err) throw err;
-          res.json(req.body);
+    req.on('end', function () {
+      body = JSON.parse(body);
+
+      if (req.method === 'POST') {
+        var db = dat(path.join(process.cwd(), self.reposDir, body.name), function (err) {
+
+          db.listen(function (err) {
+            var port = db._server.address().port
+            var url = self.host + ':' + port;
+            var data = { name: body.name, url: url, port: port };
+
+            self.db.put(body.name, data, function (dbErr) {
+              if (err) throw err;
+              res.end(JSON.stringify(body));
+            });
+          });
+
         });
-      });
-
+      }
     });
   });
 
-  return app;
+  this.server = http.createServer(router);
 };
 
 MultiDat.prototype.startDatServers = function startDatServers () {
